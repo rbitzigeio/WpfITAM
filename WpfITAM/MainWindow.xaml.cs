@@ -5,6 +5,7 @@ using System.Windows.Controls;
 using System.Diagnostics;
 using System.Runtime.Intrinsics.Arm;
 using System.Windows.Shapes;
+using System;
 
 namespace WpfITAM
 {
@@ -24,7 +25,7 @@ namespace WpfITAM
 
         private void loadData() {
             // Load IT-AM Data from csv file
-            string dir = "C:\\Users\\RBO-VS-Admin\\source\\repos\\WpfITAM_Old\\WpfITAM\\data\\";
+            string dir = getDataPath();
             ITAM icto;
             // Read Azure-IT-AM data
             Dictionary<string, ITAM> unsorted = new Dictionary<string, ITAM>();
@@ -65,6 +66,24 @@ namespace WpfITAM
                 }
             }
         }
+
+        private string getDataPath()
+        {
+            string homedrive = Environment.GetEnvironmentVariable("Homedrive");
+            string homepath = Environment.GetEnvironmentVariable("Homepath");
+            string pathsep  = "\\";
+            string path     = homedrive + homepath + pathsep;
+            string dir      = null;
+
+            foreach (string line in System.IO.File.ReadLines(path + ".wpfitam.properties")) {
+                string[] s = line.Split("=");
+                switch(s[0]) {
+                    case "datadir": dir = s[1]; break;
+                }
+            }
+            return dir;
+        }
+
         private void TVLoader(object sender, RoutedEventArgs e) {
             tbLog.Text = "Count of IT-AM objects : " + mITAM.Count().ToString();
             // Create a TreeViewItem.
