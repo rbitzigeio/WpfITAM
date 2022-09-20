@@ -1,0 +1,49 @@
+﻿<Window x:Class="WpfITAM.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:WpfITAM"
+        mc:Ignorable="d"
+        Title="MainWindow" ResizeMode="NoResize" Height="520" Width="800">
+    <Grid>
+        <Border BorderThickness="2" BorderBrush="Black" Background="LightGray" HorizontalAlignment="Center" VerticalAlignment="Top" Width="800" Height="60">
+            <Canvas Margin="0,4,0,320" Width="800">
+                <Label Content="IT-AM System Viewer" HorizontalAlignment="Left" VerticalAlignment="Center" Canvas.Left="330" Width="160" FontWeight="Bold" FontSize="22"/>
+                <Label Margin="50,30,0,0" Content="(Version 1.0)" HorizontalAlignment="Left" VerticalAlignment="Center" Canvas.Left="330" Width="60" FontSize="8"/>
+            </Canvas>
+        </Border>
+
+        <TreeView x:Name="tvIcto" SelectedItemChanged="selectionChanged" Background="Beige" Loaded="TVLoader" HorizontalAlignment="Left" Height="390" Margin="0,60,0,0" VerticalAlignment="Top" Width="200"/>
+
+        <Border BorderThickness="2" BorderBrush="Black" Background="LightGray" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,450,0,0" Width="800" Height="30">
+            <Canvas Margin="0,0,0,320" Width="800">
+                <TextBox x:Name="tbLog" Margin="10,3,0,0" Width="500" Height="20" Text=""  ></TextBox>
+                <Button Click="BtnExtractClick" Background="Beige" Content="Extract" Margin="673,3,13,0" Width="50" Height="20" FontWeight="Bold" VerticalAlignment="Top" ></Button>
+                <Button Click="BtnExitClick" Background="Beige" Content="Exit" Margin="733,3,13,0" Width="50" Height="20" FontWeight="Bold" VerticalAlignment="Top" ></Button>
+            </Canvas>
+        </Border>
+        <Label Content="ICTO" HorizontalAlignment="Left" Height="30" Margin="220,80,0,0" VerticalAlignment="Top" Width="100"/>
+        <Label x:Name="lICTO" BorderThickness="1" BorderBrush="Black" Content="" HorizontalAlignment="Left" Height="30" Margin="380,80,0,0" VerticalAlignment="Top" Width="400"/>
+        <Label Content="Name" HorizontalAlignment="Left" Height="30" Margin="220,120,0,0" VerticalAlignment="Top" Width="100"/>
+        <!-- Label x:Name="lName" BorderThickness="1" BorderBrush="Black" Content="" HorizontalAlignment="Left" Height="30" Margin="384,120,0,0" VerticalAlignment="Top" Width="400"/ -->
+
+        <TextBox x:Name="tbName" BorderThickness="1" BorderBrush="Black" HorizontalAlignment="Left" Height="30" Margin="380,120,0,0" VerticalAlignment="Top" Width="400" LostFocus="tbName_LostFocus" VerticalContentAlignment="Center" GotFocus="tbName_GotFocus"/>
+
+        <Label Content="ADM" HorizontalAlignment="Left" Height="30" Margin="220,160,0,0" VerticalAlignment="Top" Width="100"/>
+        <Label x:Name="lADM" BorderThickness="1" BorderBrush="Black" Content="" HorizontalAlignment="Left" Height="30" Margin="380,160,0,0" VerticalAlignment="Top" Width="400"/>
+        <Label Content="ADM-Vertreter" HorizontalAlignment="Left" Height="30" Margin="220,200,0,0" VerticalAlignment="Top" Width="100"/>
+        <Label x:Name="lADMVertreter" BorderThickness="1" BorderBrush="Black" Content="" HorizontalAlignment="Left" Height="30" Margin="380,200,0,0" VerticalAlignment="Top" Width="400"/>
+        <Label Content="Organisation" HorizontalAlignment="Left" Height="30" Margin="220,240,0,0" VerticalAlignment="Top" Width="100"/>
+        <Label x:Name="lOrganisation" BorderThickness="1" BorderBrush="Black" Content="" HorizontalAlignment="Left" Height="30" Margin="380,240,0,0" VerticalAlignment="Top" Width="400"/>
+        <Label Content="Changeverteiler" HorizontalAlignment="Left" Height="30" Margin="220,280,0,0" VerticalAlignment="Top" Width="100"/>
+        <Label x:Name="lVerteiler" BorderThickness="1" BorderBrush="Black" Content="" HorizontalAlignment="Left" Height="30" Margin="380,280,0,0" VerticalAlignment="Top" Width="400"/>
+        <Label Content="Betriebsdienstleister" HorizontalAlignment="Left" Height="30" Margin="220,320,0,0" VerticalAlignment="Top" Width="150"/>
+        <Label x:Name="lBDL" BorderThickness="1" BorderBrush="Black" Content="" HorizontalAlignment="Left" Height="30" Margin="380,320,0,0" VerticalAlignment="Top" Width="400"/>
+        <Label Content="Entwicklungsdienstleister" HorizontalAlignment="Left" Height="30" Margin="220,360,0,0" VerticalAlignment="Top" Width="150"/>
+        <Label x:Name="lEDL" BorderThickness="1" BorderBrush="Black" Content="" HorizontalAlignment="Left" Height="30" Margin="380,360,0,0" VerticalAlignment="Top" Width="400"/>
+        <Label Content="Wartungsdienstleister" HorizontalAlignment="Left" Height="30" Margin="220,400,0,0" VerticalAlignment="Top" Width="150"/>
+        <Label x:Name="lWDL" BorderThickness="1" BorderBrush="Black" Content="" HorizontalAlignment="Left" Height="30" Margin="380,400,0,0" VerticalAlignment="Top" Width="400"/>
+    </Grid>
+
+</Window>
