@@ -12,17 +12,25 @@ namespace WpfITAM
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
+    /// Stammdaten der IT-Systeme in der Azure Cloud werden aus diversen CSV Dateien gelen und 
+    /// in einer MAP verwaltet.
+    /// Ziel ist die Extraktion dieser Daten in eine CSV Datei, so dass Dienstleister auf Basis 
+    /// der Dienste die verantwortlichen Personen für Betriebs-, Wartungs- und 
+    /// Entwicklungsdienstleistungen benachrichtigen können. 
     public partial class MainWindow : Window
     {
         SortedDictionary<string, ITAM> mITAM       = null;
         Dictionary<string, string>     mNameToIcto = new Dictionary<string, string>();
-        string lastName = null;
+        string                         lastName    = null;
 
         public MainWindow() {
             loadData(); 
             InitializeComponent();
         }
-
+        /*-------------------------------------------------------------------------
+         * Lesen der IT-AM Stammdaten aus diversen CSV Dateien.
+         * Füllen der Map mit Stammdaten auf Basis der ICTO-Nummer der IT-Projekte.
+         */
         private void loadData() {
             // Load IT-AM Data from csv file
             string dir = getDataPath();
@@ -66,14 +74,17 @@ namespace WpfITAM
                 }
             }
         }
-
+        /*-------------------------------------------------------------------------
+         * Erfragen der Environmentvariablen des OS und Lesen der Properties des 
+         * Projekts aus dem Homedirectory des Users. 
+         */
         private string getDataPath()
         {
             string homedrive = Environment.GetEnvironmentVariable("Homedrive");
-            string homepath = Environment.GetEnvironmentVariable("Homepath");
-            string pathsep  = "\\";
-            string path     = homedrive + homepath + pathsep;
-            string dir      = null;
+            string homepath  = Environment.GetEnvironmentVariable("Homepath");
+            string pathsep   = "\\";
+            string path      = homedrive + homepath + pathsep;
+            string dir       = null;
 
             foreach (string line in System.IO.File.ReadLines(path + ".wpfitam.properties")) {
                 string[] s = line.Split("=");
@@ -84,6 +95,10 @@ namespace WpfITAM
             return dir;
         }
 
+        /*-------------------------------------------------------
+         * Füllen der graphischen Oberflächen mit den Daten der 
+         * IT-Systeme in das Oberflächenelement TreeView.  
+         */
         private void TVLoader(object sender, RoutedEventArgs e) {
             tbLog.Text = "Count of IT-AM objects : " + mITAM.Count().ToString();
             // Create a TreeViewItem.
@@ -102,6 +117,9 @@ namespace WpfITAM
             }
         }
 
+        /*-------------------------------------------------------------
+         * Verlassen der Applikation
+         */
         private void BtnExitClick(object sender, RoutedEventArgs e) {
             tbLog.Text = "Exit Application";
             Application.Current.MainWindow.Close();
