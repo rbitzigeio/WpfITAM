@@ -3,9 +3,9 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Diagnostics;
-using System.Runtime.Intrinsics.Arm;
-using System.Windows.Shapes;
 using System;
+using System.IO;
+using System.Text;
 
 namespace WpfITAM
 {
@@ -19,9 +19,10 @@ namespace WpfITAM
     /// Entwicklungsdienstleistungen benachrichtigen können. 
     public partial class MainWindow : Window
     {
-        SortedDictionary<string, ITAM> mITAM       = null;
-        Dictionary<string, string>     mNameToIcto = new Dictionary<string, string>();
-        string                         lastName    = null;
+        SortedDictionary<string, ITAM> _mITAM       = null;
+        Dictionary<string, string>     _mNameToIcto = new Dictionary<string, string>();
+        string                         _lastName    = null;
+        string                         _dataDir     = null;
 
         public MainWindow() {
             loadData(); 
@@ -33,24 +34,24 @@ namespace WpfITAM
          */
         private void loadData() {
             // Load IT-AM Data from csv file
-            string dir = getDataPath();
+            _dataDir = getDataPath();
             ITAM icto;
             // Read Azure-IT-AM data
             Dictionary<string, ITAM> unsorted = new Dictionary<string, ITAM>();
-            foreach (string line in System.IO.File.ReadLines(dir + "Azure-IT-AM.csv")) {
+            foreach (string line in System.IO.File.ReadLines(_dataDir + "Azure-IT-AM.csv")) {
                 //Trace.WriteLine(line);
                 icto = new ITAM(line.Trim());
                 unsorted.Add(line, icto);
             }
-            mITAM = new SortedDictionary<string, ITAM>(unsorted);
+            _mITAM = new SortedDictionary<string, ITAM>(unsorted);
             // Read IT-AM-Application data
-            foreach (string line in System.IO.File.ReadLines(dir + "IT-AM-Applications.csv")) {
+            foreach (string line in System.IO.File.ReadLines(_dataDir + "IT-AM-Applications.csv")) {
                 //Trace.WriteLine(line);
                 string[] s = line.Split(";");
-                if (s.Length > 2 && mITAM.ContainsKey(s[2])) {
-                    ITAM itam = mITAM[s[2]];
+                if (s.Length > 2 && _mITAM.ContainsKey(s[2])) {
+                    ITAM itam = _mITAM[s[2]];
                     itam.setName(s[1]);
-                    mNameToIcto.Add(s[1], s[2]);
+                    _mNameToIcto.Add(s[1], s[2]);
                     if (s.Length > 5){
                         itam.setOrganisation(s[5]);
                         itam.setADM(s[6]);
@@ -58,12 +59,12 @@ namespace WpfITAM
                 }
             }
             // Read IT-AM-Zuständigkeiten data
-            foreach (string line in System.IO.File.ReadLines(dir + "IT-AM-Zuständigkeiten.csv")) {
+            foreach (string line in System.IO.File.ReadLines(_dataDir + "IT-AM-Zuständigkeiten.csv")) {
                 //Trace.WriteLine(line);
                 string[] s = line.Split(";");
                 if (s.Length == 17) {
-                    if (mITAM.ContainsKey(s[3])) {
-                        ITAM itam = mITAM[s[3]];
+                    if (_mITAM.ContainsKey(s[3])) {
+                        ITAM itam = _mITAM[s[3]];
                         switch (s[10]) {
                             case "BDL AP":             itam.setBDL(s[6]);           break;
                             case "ADM-Vertreter":      itam.setADMVertreter(s[11]); break;
@@ -100,12 +101,12 @@ namespace WpfITAM
          * IT-Systeme in das Oberflächenelement TreeView.  
          */
         private void TVLoader(object sender, RoutedEventArgs e) {
-            tbLog.Text = "Count of IT-AM objects : " + mITAM.Count().ToString();
+            tbLog.Text = "Count of IT-AM objects : " + _mITAM.Count().ToString();
             // Create a TreeViewItem.
             TreeViewItem item = new TreeViewItem();
             item.Header = "IT-AM Sytem";
             // Insert tree items to root item
-            foreach (var entry in mITAM) {
+            foreach (var entry in _mITAM) {
                 TreeViewItem tvi = new TreeViewItem();
                 tvi.Header = entry.Key;
                 item.Items.Add(tvi);
@@ -134,8 +135,8 @@ namespace WpfITAM
                 string icto = item.Header.ToString();
                 if (icto != null) { 
                     tbLog.Text  = icto;
-                    if (mITAM.ContainsKey(icto)) {
-                        ITAM itam = mITAM[icto];
+                    if (_mITAM.ContainsKey(icto)) {
+                        ITAM itam = _mITAM[icto];
                         lICTO.Content         = icto;
                         //lName.Content         = itam.getName();
                         tbName.Text           = itam.getName();
@@ -153,7 +154,24 @@ namespace WpfITAM
          * übergeben werden kann.
          */
         private void BtnExtractClick(object sender, RoutedEventArgs e) {
-            tbLog.Text = "Extract Application";
+            tbLog.Text  = "Extract Application";
+            string line = null;
+            string path = _dataDir + "IT-AM-Systeme.csv";
+            using (FileStream fs = File.Open(path, FileMode.OpenOrCreate, FileAccess.Write, FileShare.None)) {
+                foreach (var itam in _mITAM) {
+                    line = itam.Value.getIcto() + ";" +
+                           itam.Value.getName() + ";" +
+                           itam.Value.getADM() + ";" +
+                           itam.Value.getADMVertreter() + ";" +
+                           itam.Value.getOrganisation() + ";" +
+                           itam.Value.getVerteiler() + ";" +
+                           itam.Value.getBDL() + "\n";
+                    Byte[] info = new UTF8Encoding(true).GetBytes(line);
+                    fs.Write(info, 0, info.Length);
+                }
+                fs.Flush();
+                fs.Close();
+            }
         }
         /*--------------------------------------------------------------------
          * Das Textfeld mit dem Namen des IT-Systems kann auch zur Suche genutzt werden.
@@ -166,16 +184,16 @@ namespace WpfITAM
         */
         private void tbName_LostFocus(object sender, RoutedEventArgs e) {
             var tb = e.Source as TextBox;
-            if (mNameToIcto.ContainsKey(tb.Text)) {
+            if (_mNameToIcto.ContainsKey(tb.Text)) {
                 tvIcto.Items.Clear();
-                string icto               = mNameToIcto[tb.Text];
+                string icto               = _mNameToIcto[tb.Text];
                 tbLog.Text                = "Focus Lost. New ICTO : " + tb.Text + " / " + icto;
                 TreeViewItem newTVI       = new TreeViewItem();
                 newTVI.Header             = "IT-AM Sytem";
                 newTVI.IsExpanded         = true;
                 TreeViewItem selectedItem = new TreeViewItem();
                 tvIcto.Items.Add(newTVI);
-                foreach (var itam in mITAM) {
+                foreach (var itam in _mITAM) {
                     TreeViewItem item2 = new TreeViewItem();
                     item2.Header = itam.Value.getIcto();
                     newTVI.Items.Add(item2);
@@ -189,8 +207,8 @@ namespace WpfITAM
                 tvIcto.UpdateLayout();
             } else {
                 tbLog.Text = "ICTO for " + tb.Text + " not found.";
-                if (lastName != null) { 
-                    tb.Text = lastName; 
+                if (_lastName != null) { 
+                    tb.Text = _lastName; 
                 }
             }  
             
@@ -204,7 +222,7 @@ namespace WpfITAM
         */
         private void tbName_GotFocus(object sender, RoutedEventArgs e) {
             var tb = e.Source as TextBox;
-            lastName = tb.Text;
+            _lastName = tb.Text;
         }
     }
 }
