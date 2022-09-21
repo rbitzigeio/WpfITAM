@@ -158,6 +158,9 @@ namespace WpfITAM
             string line = null;
             string path = _dataDir + "IT-AM-Systeme.csv";
             using (FileStream fs = File.Open(path, FileMode.OpenOrCreate, FileAccess.Write, FileShare.None)) {
+                string s  = "ICTO; Name; ADM; ADM-Vertreter; Organistation; Change Verteiler; Betriebs-DL \n";
+                Byte[] bs = new UTF8Encoding(true).GetBytes(s);
+                fs.Write(bs, 0, bs.Length);
                 foreach (var itam in _mITAM) {
                     line = itam.Value.getIcto() + ";" +
                            itam.Value.getName() + ";" +
