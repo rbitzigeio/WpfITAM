@@ -18,7 +18,7 @@
 
         <Border BorderThickness="2" BorderBrush="Black" Background="LightGray" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,450,0,0" Width="800" Height="30">
             <Canvas Margin="0,0,0,320" Width="800">
-                <TextBox x:Name="tbLog" Margin="10,3,0,0" Width="500" Height="20" Text=""  ></TextBox>
+                <TextBox x:Name="tbLog" Margin="10,3,0,0" Width="650" Height="20" Text=""  ></TextBox>
                 <Button Click="BtnExtractClick" Background="Beige" Content="Extract" Margin="673,3,13,0" Width="50" Height="20" FontWeight="Bold" VerticalAlignment="Top" ></Button>
                 <Button Click="BtnExitClick" Background="Beige" Content="Exit" Margin="733,3,13,0" Width="50" Height="20" FontWeight="Bold" VerticalAlignment="Top" ></Button>
             </Canvas>
