@@ -21,6 +21,7 @@ namespace WpfITAM
     {
         SortedDictionary<string, ITAM> _mITAM       = null;
         Dictionary<string, string>     _mNameToIcto = new Dictionary<string, string>();
+        Dictionary<string, string>     _mEmail      = new Dictionary<string, string>();
         string                         _lastName    = null;
         string                         _dataDir     = null;
 
@@ -32,55 +33,76 @@ namespace WpfITAM
          * Lesen der IT-AM Stammdaten aus diversen CSV Dateien.
          * Füllen der Map mit Stammdaten auf Basis der ICTO-Nummer der IT-Projekte.
          */
-        private void loadData() {
+        private void loadData()
+        {
             // Load IT-AM Data from csv file
             _dataDir = getDataPath();
             ITAM icto;
             // Read Azure-IT-AM data
             Dictionary<string, ITAM> unsorted = new Dictionary<string, ITAM>();
-            foreach (string line in System.IO.File.ReadLines(_dataDir + "Azure-IT-AM.csv")) {
+            foreach (string line in System.IO.File.ReadLines(_dataDir + "Azure-IT-AM.csv"))
+            {
                 //Trace.WriteLine(line);
                 icto = new ITAM(line.Trim());
                 unsorted.Add(line, icto);
             }
             _mITAM = new SortedDictionary<string, ITAM>(unsorted);
             // Read IT-AM-Application data
-            foreach (string line in System.IO.File.ReadLines(_dataDir + "IT-AM-Applications.csv")) {
+            foreach (string line in System.IO.File.ReadLines(_dataDir + "IT-AM-Applications.csv"))
+            {
                 //Trace.WriteLine(line);
                 string[] s = line.Split(";");
-                if (s.Length > 2 && _mITAM.ContainsKey(s[2])) {
+                if (s.Length > 2 && _mITAM.ContainsKey(s[2]))
+                {
                     ITAM itam = _mITAM[s[2]];
                     itam.setName(s[1]);
                     _mNameToIcto.Add(s[1], s[2]);
-                    if (s.Length > 5){
+                    if (s.Length > 5)
+                    {
                         itam.setOrganisation(s[5]);
                         itam.setADM(s[6]);
                     }
                 }
             }
             // Read IT-AM-Zuständigkeiten data
-            foreach (string line in System.IO.File.ReadLines(_dataDir + "IT-AM-Zuständigkeiten.csv")) {
+            foreach (string line in System.IO.File.ReadLines(_dataDir + "IT-AM-Zuständigkeiten.csv"))
+            {
                 //Trace.WriteLine(line);
                 string[] s = line.Split(";");
-                if (s.Length == 17) {
-                    if (_mITAM.ContainsKey(s[3])) {
+                if (s.Length == 17)
+                {
+                    if (_mITAM.ContainsKey(s[3]))
+                    {
                         ITAM itam = _mITAM[s[3]];
-                        switch (s[10]) {
-                            case "BDL AP":             itam.setBDL(s[6]);           break;
-                            case "ADM-Vertreter":      itam.setADMVertreter(s[11]); break;
-                            case "BenachrichtigungCh": itam.setVerteiler(s[11]);    break;
+                        switch (s[10])
+                        {
+                            case "BDL AP": itam.setBDL(s[6]); break;
+                            case "ADM-Vertreter": itam.setADMVertreter(s[11]); break;
+                            case "BenachrichtigungCh": itam.setVerteiler(s[11]); break;
                             default: break;
                         }
                     }
                 }
             }
+            // Read E-Mail Accounts Mapping
+            foreach (string line in System.IO.File.ReadLines(_dataDir + "IT-AM-EMail.csv"))
+            {
+                //Trace.WriteLine(line);
+                string[] s     = line.Split(";");
+                string   name  = null;
+                string   email = null;
+                if (s.Length == 2) {
+                    name = s[0];
+                    email = s[1];
+                    _mEmail[name] = email;
+                }
+            }
         }
-        /*-------------------------------------------------------------------------
-         * Erfragen der Environmentvariablen des OS und Lesen der Properties des 
-         * Projekts aus dem Homedirectory des Users. 
-         */
-        private string getDataPath()
-        {
+            /*-------------------------------------------------------------------------
+             * Erfragen der Environmentvariablen des OS und Lesen der Properties des 
+             * Projekts aus dem Homedirectory des Users. 
+             */
+        private string getDataPath() {
             string homedrive = Environment.GetEnvironmentVariable("Homedrive");
             string homepath  = Environment.GetEnvironmentVariable("Homepath");
             string pathsep   = "\\";
