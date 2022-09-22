@@ -1,0 +1,44 @@
+ICTO;Projekt;LS (PI);LS (NPI);ADM;ADM Postfach;Incident Postfach (ADM DPDHL Postfach);Incident Postfach (BDL Postfach);
+;CaaS;5576;;Stefan Stieber;stefan.stieber@deutschepost.de;;DL-TS-PUMISPC-CUGermany-DPDHL-OOT@t-systems.com ;
+;Technologie Evaluierung;;5401;Raimund Bitzigeio;19C_Plattformen@deutschepost.de;19C_Plattformen@deutschepost.de;;
+ICTO-1023;TQS;;5699;Martin Dungs;tqs.itbrief@deutschepost.de;tqs.itbrief@deutschepost.de;;
+ICTO-1031;EPM;;5678;Kai Wolbeck;gordon.breuer@msg.group;;;
+ICTO-1118;VLS;5392;5393;Eric Na·;eric.nass@deutschepost.de;;;Eric sendet update
+ICTO-1236;THB TF;;5370;Stefan Pollok;stefan.pollok0102@deutschepost.de;19C2_Azure_Changes@deutschepost.de;;
+ICTO-1301;ROSy;5669;5670;Dirk Reiff;rosy-ops@t-systems.com;;dhl-rpi@micromata.de;
+ICTO-1504;SDB;;5422;RenÇ Haucke;Vert.SDB_Azure_Montoring@deutschepost.de;Vert.SDB_Azure_Montoring@deutschepost.de;;
+ICTO-1582;HLS;5653;;Peter Klien;peter.klien@deutschepost.de;;hls-support@mms-support.de;
+ICTO-1783;NolP;5548;5516;Hanne Jokic;hanne.jokic@dhl.com;;dhl-nolp-cloud@micromata.de;
+ICTO-1860;CoPa;;5428;Marco Krause;marco.krause@deutschepost.de;;DPDHL.DP.Project.OnTrack.DTM.Maintenance.ACL@accenture.com;
+ICTO-1860;DTM;;5313;Bjîrn Wilke;bjoern.wilke@deutschepost.de;;;
+ICTO-1912;TMS;;5378;Tobias Rehbock;tobias.rehbock1@deutschepost.de;;;
+ICTO-3028;TTHUB;5502;5503;Jean Baptiste Doudia;jean_baptiste.doudia@deutschepost.de;;;
+ICTO-3126;MF Octane;5589;5590;Gerd Enderes;gerd.enderes@deutschepost.de;;;
+ICTO-3292;Optima;5500;5501;Mario Mineo;mario.mineo@deutschepost.de;;;
+ICTO-357;ZORA;;5717;Thomas Spaeth;t.spaeth@deutschepost.de;ZORA-SDM-Alarming@dpdhl.com;dpdhl-azure@mms-support.de;
+ICTO-3718;SFOX;5643;5641;Jîrg Kendzia;thomas.voelkering@deutschepost.de;;;s.Dtrack
+ICTO-681;Optra;5387;5386;Sebastian Spahn;sebastian.spahn@deutschepost.de;;;
+ICTO-862;Portoberater;5656;5668;Christian Esselborn;christian.esselborn@deutschepost.de;;pb-pka-post-cloud@micromata.de;
+ICTO-869;Standortfinder;5697;5698;Christian Esselborn;christian.esselborn@deutschepost.de;;sf-pka-post@micromata.de;
+ICTO-885;OSCA;5693;;Jochen Dekker;jochen.dekker@deutschepost.de;;DL-DL.DL-Capture-Projects@t-systems.com;
+ICTO-894;Internet P&P;5474;5473;Christoph Notarp;christoph.notarp@deutschepost.de;;internetpnp@t-systems-mms.com;
+ICTO-905;MKP;5604;;David Hucke;david.hucke@deutschepost.de;;DPPMKP@senacor.com;
+ICTO-915;ODS;5672;5678;Philipp Wehner;philipp.wehner@deutschepost.de;;DPDHL.DP.Project.ODSTT.TA@accenture.com;
+ICTO-959;TTPB;5494;5431;Jochen Fischer;jochen.fischer@deutschepost.de;;;
+ICTO-973;Panda;5580;;Andras Csurgo;andras.csurgo@deutschepost.de;projekt.netz.azure.benachrichtigung@deutschepost.de;;
+ICTO-977;Sollweg;5467;5467;Andras Csurgo;wolfgang.friedrichs@deutschepost.de;projekt.netz.azure.benachrichtigung@deutschepost.de;;
+ITR-12;AM;;5557;Henning Ebel;henning.ebel@deutschepost.de;;;
+ITR-2054;DigizbZSP;5383;5382;Tom Geier;tom.geier@deutschepost.de;;;
+ITR-3024;DigiPeP;;5561;Marco Krause;marco.krause@deutschepost.de;;DPDHL.DP.Projects.DigiPeP@accenture.com;
+ITR-3328;EPP;5585;5584;Michael Schnake;michael.schnake@deutschepost.de;;;
+ITR-3443;AKOM;5621;5620;Sabine Richter;sabine.richter@deutschepost.de;akom.azure-changes@deutschepost.de;akom.support@avision-it.de;
+ITR-3451;Dtrack;5577;;Thomas Vîlkering;thomas.voelkering@deutschepost.de;;;Thomas Vîlkering weigert sich solch ein Postfach anzulegen, welches nur im Rahmen von CCC fÅr die Benachrichtugn von Changes genutzt wird. Er schlÑgt die zentrale Pflege in IT-AM vor. Es hat sich gezeigt, dass innerhalb von IT-AM die Pflege von  Kontakten mit unterschiedlichen Rollen machbar ist.
+ITR-3637;Bzplus;5629;5615;Andre Wiener;andre.wiener@deutschepost.de;;;
+ITR-3678;TBM;5626;5627;Olaf Beuer;o.beuer@deutschepost.de;;;
+ITR-3687;GeDas;;5691;Gerald Riedel;gerald.riedel@deutschepost.de;;;
+ITR-3712;CIG;5624;5625;Raimund Marx;raimund.marx@deutschepost.de;;;
+ITR-3719;CSS;5655;5631;Stefan Stieber;stefan.stieber@deutschepost.de;;;
+ITR-4195;DiCos;;5703;Oliver Alich;oliver.alich@deutschepost.de;verteiler.dicos@deutschepost.de;;
+ITR-4283;GKP;;5514;Thomas Henkel;thomas.henkel@deutschepost.de;;dhl-gkp-devops@materna.de;
+ITR-4382;LULM;;5708;Martin Virnich;martin.virnich@deutschepost.de;;;
+ITR-4404;PSPS;5702;5701;Robert Heimann;robert.heimann@deutschepost.de;;dhl-nolp-cloud@micromata.de;
