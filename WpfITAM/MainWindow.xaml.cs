@@ -41,8 +41,7 @@ namespace WpfITAM
             ITAM icto;
             // Read Azure-IT-AM data
             Dictionary<string, ITAM> unsorted = new Dictionary<string, ITAM>();
-            foreach (string line in System.IO.File.ReadLines(_dataDir + "Azure-IT-AM.csv"))
-            {
+            foreach (string line in System.IO.File.ReadLines(_dataDir + "Azure-IT-AM.csv")) {
                 //Trace.WriteLine(line);
                 icto = new ITAM(line.Trim());
                 unsorted.Add(line, icto);
@@ -78,6 +77,8 @@ namespace WpfITAM
                         switch (s[10])
                         {
                             case "BDL AP": itam.setBDL(s[6]); break;
+                            case "EDL AP": itam.setEDL(s[6]); break;
+                            case "WDL AP": itam.setWDL(s[6]); break;
                             case "ADM-Vertreter": itam.setADMVertreter(s[11]); break;
                             case "BenachrichtigungCh": itam.setVerteiler(s[11]); break;
                             default: break;
