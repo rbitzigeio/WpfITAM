@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System;
 using System.IO;
 using System.Text;
+using System.Windows.Shapes;
 
 namespace WpfITAM
 {
@@ -97,11 +98,15 @@ namespace WpfITAM
                     _mEmail[name] = email;
                 }
             }
+            foreach (var entry in _mEmail) {
+                Trace.WriteLine(entry.Key + " / " + entry.Value);
+            }
+
         }
-            /*-------------------------------------------------------------------------
-             * Erfragen der Environmentvariablen des OS und Lesen der Properties des 
-             * Projekts aus dem Homedirectory des Users. 
-             */
+        /*-------------------------------------------------------------------------
+         * Erfragen der Environmentvariablen des OS und Lesen der Properties des 
+         * Projekts aus dem Homedirectory des Users. 
+         */
         private string getDataPath() {
             string homedrive = Environment.GetEnvironmentVariable("Homedrive");
             string homepath  = Environment.GetEnvironmentVariable("Homepath");
@@ -175,12 +180,14 @@ namespace WpfITAM
          * Extrahieren der gefundenen Daten in eine CSV Datei, die an Dienstleister
          * übergeben werden kann.
          */
-        private void BtnExtractClick(object sender, RoutedEventArgs e) {
-            tbLog.Text  = "Extract Application";
+        private void BtnExtractClick(object sender, RoutedEventArgs e)
+        {
+            tbLog.Text = "Extract Application";
+            Dictionary<string, string> mEmail = new Dictionary<string, string>();
             string line = null;
             string path = _dataDir + "IT-AM-Systeme.csv";
             using (FileStream fs = File.Open(path, FileMode.OpenOrCreate, FileAccess.Write, FileShare.None)) {
-                string s  = "ICTO; Name; ADM; ADM-Vertreter; Organisation; Change Verteiler; Betriebs-DL \n";
+                string s = "ICTO; Name; ADM; ADM-Vertreter; Organisation; Change Verteiler; Betriebs-DL \n";
                 Byte[] bs = new UTF8Encoding(true).GetBytes(s);
                 fs.Write(bs, 0, bs.Length);
                 foreach (var itam in _mITAM) {
@@ -193,6 +200,26 @@ namespace WpfITAM
                            itam.Value.getBDL() + "\n";
                     Byte[] info = new UTF8Encoding(true).GetBytes(line);
                     fs.Write(info, 0, info.Length);
+                    if (itam.Value.getADM() != null && itam.Value.getADM().Length > 0) {
+                        if (!mEmail.ContainsKey(itam.Value.getADM()) && _mEmail[itam.Value.getADM()].Length > 0) {
+                            mEmail.Add(itam.Value.getADM(), _mEmail[itam.Value.getADM()]);
+                        }
+                    }
+                    if (itam.Value.getADMVertreter() != null && itam.Value.getADMVertreter().Length > 0) {
+                        if (!mEmail.ContainsKey(itam.Value.getADMVertreter()) && _mEmail[itam.Value.getADMVertreter()].Length > 0) {
+                            mEmail.Add(itam.Value.getADMVertreter(), _mEmail[itam.Value.getADMVertreter()]);
+                        }
+                    }
+                }
+                fs.Flush();
+                fs.Close();
+            }
+            path = _dataDir + "IT-AM-MMS.csv";
+            using (FileStream fs = File.Open(path, FileMode.OpenOrCreate, FileAccess.Write, FileShare.None)) {
+                foreach (var email in mEmail) {
+                    line = email.Value + "\n";
+                    Byte[] bs = new UTF8Encoding(true).GetBytes(line);
+                    fs.Write(bs, 0, bs.Length);
                 }
                 fs.Flush();
                 fs.Close();
