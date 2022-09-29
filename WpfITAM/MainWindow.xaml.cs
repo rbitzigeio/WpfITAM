@@ -7,6 +7,7 @@ using System;
 using System.IO;
 using System.Text;
 using System.Windows.Shapes;
+using System.Windows.Navigation;
 
 namespace WpfITAM
 {
@@ -20,11 +21,12 @@ namespace WpfITAM
     /// Entwicklungsdienstleistungen benachrichtigen können. 
     public partial class MainWindow : Window
     {
-        SortedDictionary<string, ITAM> _mITAM       = null;
-        Dictionary<string, string>     _mNameToIcto = new Dictionary<string, string>();
-        Dictionary<string, string>     _mEmail      = new Dictionary<string, string>();
-        string                         _lastName    = null;
-        string                         _dataDir     = null;
+        SortedDictionary<string, ITAM>     _mITAM       = null;
+        Dictionary<string, string>         _mNameToIcto = new Dictionary<string, string>();
+        Dictionary<string, string>         _mEmail      = new Dictionary<string, string>();
+        Dictionary<string, VerteilerInfo>  _mADMInfo    = new Dictionary<string, VerteilerInfo>();
+        string                             _lastName    = "";
+        string                             _dataDir     = "";
 
         public MainWindow() {
             loadData(); 
@@ -34,27 +36,68 @@ namespace WpfITAM
          * Lesen der IT-AM Stammdaten aus diversen CSV Dateien.
          * Füllen der Map mit Stammdaten auf Basis der ICTO-Nummer der IT-Projekte.
          */
-        private void loadData()
-        {
-            // Load IT-AM Data from csv file
+        private void loadData() {
             _dataDir = getDataPath();
+            // Read E-Mail Accounts Mapping
+            loadITAMEmails(_dataDir, "IT-AM-EMail.csv");
+            // Load IT-AM Data from csv file
+            loadITAM(_dataDir, "Azure-IT-AM.csv");
+            // Read IT-AM-Application data
+            loadITAMApplication(_dataDir, "IT-AM-Applications.csv");
+            // Read IT-AM-Zuständigkeiten data
+            loadITAMResponsibility(_dataDir, "IT-AM-Zuständigkeiten.csv");
+            // Read ADM Verteiler Info
+            loadITAMADMInfo(_dataDir, "IT-AM-ADMAbfrage.csv");
+        }
+
+        private void loadITAMADMInfo(string dataDir, string v) {
+            VerteilerInfo vi;
+            //ICTO;Projekt;LS (PI);LS (NPI);ADM;ADM Postfach;Incident Postfach (ADM DPDHL Postfach);Incident Postfach (BDL Postfach);
+            foreach (string line in System.IO.File.ReadLines(dataDir + v)) {
+                string[] s = line.Split(";");
+                if (s[0] != null && s[0].Length > 0) {
+                    vi = new VerteilerInfo(s[0]);
+                    _mADMInfo[s[0]] = vi;
+                } else {
+                    vi = null;
+                }
+                if (s[0] == "ITR-3443") {
+                    Trace.WriteLine(line);
+                }
+                if (vi != null) {
+                    if (s[1] != null && s[1].Length > 0) { vi.Project = s[1];      }
+                    if (s[2] != null && s[2].Length > 0) { vi.LS_PI = s[2];        }
+                    if (s[3] != null && s[3].Length > 0) { vi.LS_NPI = s[3];       }
+                    if (s[4] != null && s[4].Length > 0) { vi.ADM = s[4];          }
+                    if (s[5] != null && s[5].Length > 0) { vi.ADMPostfach = s[5];  }
+                    if (s[6] != null && s[6].Length > 0) { vi.DPDHLPostfach = s[6];}
+                    if (s[7] != null && s[7].Length > 0) { vi.BDLPostfach = s[7];  }
+                }
+            }
+        }
+
+        private void loadITAM(string dataDir, string v) {
             ITAM icto;
             // Read Azure-IT-AM data
             Dictionary<string, ITAM> unsorted = new Dictionary<string, ITAM>();
-            foreach (string line in System.IO.File.ReadLines(_dataDir + "Azure-IT-AM.csv")) {
+            foreach (string line in System.IO.File.ReadLines(dataDir + v))
+            {
                 //Trace.WriteLine(line);
                 icto = new ITAM(line.Trim());
                 unsorted.Add(line, icto);
             }
             _mITAM = new SortedDictionary<string, ITAM>(unsorted);
-            // Read IT-AM-Application data
-            foreach (string line in System.IO.File.ReadLines(_dataDir + "IT-AM-Applications.csv"))
-            {
+        }
+
+        private void loadITAMApplication(string dataDir, string v) {
+            foreach (string line in System.IO.File.ReadLines(dataDir + v)) {
                 //Trace.WriteLine(line);
                 string[] s = line.Split(";");
-                if (s.Length > 2 && _mITAM.ContainsKey(s[2]))
-                {
+                if (s.Length > 2 && _mITAM.ContainsKey(s[2])) {
                     ITAM itam = _mITAM[s[2]];
+                    if (s[2] == "ITR-3443") {
+                        Trace.WriteLine(line);
+                    }
                     itam.setName(s[1]);
                     _mNameToIcto.Add(s[1], s[2]);
                     if (s.Length > 5)
@@ -64,50 +107,61 @@ namespace WpfITAM
                     }
                 }
             }
-            // Read IT-AM-Zuständigkeiten data
-            foreach (string line in System.IO.File.ReadLines(_dataDir + "IT-AM-Zuständigkeiten.csv"))
-            {
+        }
+
+        private void loadITAMResponsibility(string dataDir, string v){
+            foreach (string line in System.IO.File.ReadLines(dataDir + v)) {
                 //Trace.WriteLine(line);
                 string[] s = line.Split(";");
-                if (s.Length == 17)
-                {
-                    if (_mITAM.ContainsKey(s[3]))
-                    {
+                if (s.Length == 17) {
+                    if (s[3] == "ITR-3443") {
+                        Trace.WriteLine(line);
+                    }
+                    if (_mITAM.ContainsKey(s[3])) {
                         ITAM itam = _mITAM[s[3]];
-                        switch (s[10])
-                        {
-                            case "BDL AP": itam.setBDL(s[6]); break;
-                            case "EDL AP": itam.setEDL(s[6]); break;
-                            case "WDL AP": itam.setWDL(s[6]); break;
-                            case "ADM-Vertreter": itam.setADMVertreter(s[11]); break;
-                            case "BenachrichtigungCh": itam.setVerteiler(s[11]); break;
+                        switch (s[10]) {
+                            case "BDL AP":             itam.setBDL(getEmail(s[6]));           break;
+                            case "EDL AP":             itam.setEDL(getEmail(s[6]));           break;
+                            case "WDL AP":             itam.setWDL(getEmail(s[6]));           break;
+                            case "ADM-Vertreter":      itam.setADMVertreter(getEmail(s[11])); break;
+                            case "BenachrichtigungCh": itam.setVerteiler(getEmail(s[11]));    break;
                             default: break;
                         }
                     }
                 }
             }
-            // Read E-Mail Accounts Mapping
-            foreach (string line in System.IO.File.ReadLines(_dataDir + "IT-AM-EMail.csv"))
+        }
+
+        private string getEmail(string s) {
+            string s1 = s;
+            if (!s.Contains("@") && _mEmail.ContainsKey(s)) {
+                    s1 = _mEmail[s];
+            } 
+            return s1;
+        }
+
+        private void loadITAMEmails(string dataDir, string v) {
+            foreach (string line in System.IO.File.ReadLines(dataDir + v))
             {
                 //Trace.WriteLine(line);
-                string[] s     = line.Split(";");
-                string   name  = null;
-                string   email = null;
+                string[] s = line.Split(";");
+                string name = null;
+                string email = null;
                 if (s.Length == 2) {
-                    name = s[0];
-                    email = s[1];
+                    name          = s[0];
+                    email         = s[1];
                     _mEmail[name] = email;
                 }
             }
             foreach (var entry in _mEmail) {
                 Trace.WriteLine(entry.Key + " / " + entry.Value);
             }
-
         }
+
         /*-------------------------------------------------------------------------
-         * Erfragen der Environmentvariablen des OS und Lesen der Properties des 
-         * Projekts aus dem Homedirectory des Users. 
-         */
+* Erfragen der Environmentvariablen des OS und Lesen der Properties des 
+* Projekts aus dem Homedirectory des Users. 
+*/
         private string getDataPath() {
             string homedrive = Environment.GetEnvironmentVariable("Homedrive");
             string homepath  = Environment.GetEnvironmentVariable("Homepath");
@@ -173,6 +227,13 @@ namespace WpfITAM
                         lOrganisation.Content = itam.getOrganisation();
                         lVerteiler.Content    = itam.getVerteiler();
                         lBDL.Content          = itam.getBDL();
+                        lEDL.Content          = itam.getEDL();
+                        lWDL.Content          = itam.getWDL();
+                        if (_mADMInfo.ContainsKey(icto)) {
+                            VerteilerInfo vi = _mADMInfo[icto];
+                            if (lVerteiler.Content == null) { lVerteiler.Content = vi.DPDHLPostfach; }
+                            if (lBDL.Content       == null) { lBDL.Content       = vi.BDLPostfach;}
+                        }
                     }
                 }
             }
