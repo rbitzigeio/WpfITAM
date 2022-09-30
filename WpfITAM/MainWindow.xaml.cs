@@ -242,14 +242,13 @@ namespace WpfITAM
          * Extrahieren der gefundenen Daten in eine CSV Datei, die an Dienstleister
          * übergeben werden kann.
          */
-        private void BtnExtractClick(object sender, RoutedEventArgs e)
-        {
+        private void BtnExtractClick(object sender, RoutedEventArgs e) {
             tbLog.Text = "Extract Application";
             Dictionary<string, string> mEmail = new Dictionary<string, string>();
             string line = null;
             string path = _dataDir + "IT-AM-Systeme.csv";
             using (FileStream fs = File.Open(path, FileMode.OpenOrCreate, FileAccess.Write, FileShare.None)) {
-                string s = "ICTO; Name; ADM; ADM-Vertreter; Organisation; Change Verteiler; Betriebs-DL \n";
+                string s = "ICTO; Name; ADM; ADM-Vertreter; Organisation; Change Verteiler; Betriebs-DL; Entwicklungs-DL; Wartungs-DL \n";
                 Byte[] bs = new UTF8Encoding(true).GetBytes(s);
                 fs.Write(bs, 0, bs.Length);
                 foreach (var itam in _mITAM) {
@@ -259,7 +258,9 @@ namespace WpfITAM
                            itam.Value.getADMVertreter() + ";" +
                            itam.Value.getOrganisation() + ";" +
                            itam.Value.getVerteiler() + ";" +
-                           itam.Value.getBDL() + "\n";
+                           itam.Value.getBDL() + ";" +
+                           itam.Value.getEDL() + ";" +
+                           itam.Value.getWDL() + "\n";
                     Byte[] info = new UTF8Encoding(true).GetBytes(line);
                     fs.Write(info, 0, info.Length);
                     if (itam.Value.getADM() != null && itam.Value.getADM().Length > 0) {
@@ -268,8 +269,33 @@ namespace WpfITAM
                         }
                     }
                     if (itam.Value.getADMVertreter() != null && itam.Value.getADMVertreter().Length > 0) {
-                        if (!mEmail.ContainsKey(itam.Value.getADMVertreter()) && _mEmail[itam.Value.getADMVertreter()].Length > 0) {
-                            mEmail.Add(itam.Value.getADMVertreter(), _mEmail[itam.Value.getADMVertreter()]);
+                        if (!mEmail.ContainsKey(itam.Value.getADMVertreter())) {
+                            mEmail.Add(itam.Value.getADMVertreter(), itam.Value.getADMVertreter());
+                        }
+                    }
+                    if (itam.Value.getVerteiler() != null && itam.Value.getVerteiler().Length > 0){
+                        if (!mEmail.ContainsKey(itam.Value.getVerteiler())) {
+                            mEmail.Add(itam.Value.getVerteiler(), itam.Value.getVerteiler());
+                        }
+                    }
+                    if (itam.Value.getBDL() != null && itam.Value.getBDL().Length > 0) {
+                        if (!mEmail.ContainsKey(itam.Value.getBDL())) {
+                            mEmail.Add(itam.Value.getBDL(), itam.Value.getBDL());
+                        }
+                    }
+                    if (itam.Value.getBDL() != null && itam.Value.getBDL().Length > 0) {
+                        if (!mEmail.ContainsKey(itam.Value.getBDL())) {
+                            mEmail.Add(itam.Value.getBDL(), itam.Value.getBDL());
+                        }
+                    }
+                    if (itam.Value.getEDL() != null && itam.Value.getEDL().Length > 0) {
+                        if (!mEmail.ContainsKey(itam.Value.getEDL())) {
+                            mEmail.Add(itam.Value.getEDL(), itam.Value.getEDL());
+                        }
+                    }
+                    if (itam.Value.getWDL() != null && itam.Value.getWDL().Length > 0) {
+                        if (!mEmail.ContainsKey(itam.Value.getWDL())) {
+                            mEmail.Add(itam.Value.getWDL(), itam.Value.getWDL());
                         }
                     }
                 }

@@ -1,5 +1,6 @@
 .vs
 WpfITAM/bin/
-WpfITAM/obj/
 WpfITAM/data/IT-AM-Systeme.csv
 WpfITAM/data/IT-AM-MMS.csv
+WpfITAM/obj/
+WpfITAM/Properties
