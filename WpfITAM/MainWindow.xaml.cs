@@ -61,7 +61,7 @@ namespace WpfITAM
                 } else {
                     vi = null;
                 }
-                if (s[0] == "ITR-3443") {
+                if (s[0] == "ITR-4404") {
                     Trace.WriteLine(line);
                 }
                 if (vi != null) {
@@ -72,6 +72,17 @@ namespace WpfITAM
                     if (s[5] != null && s[5].Length > 0) { vi.ADMPostfach = s[5];  }
                     if (s[6] != null && s[6].Length > 0) { vi.DPDHLPostfach = s[6];}
                     if (s[7] != null && s[7].Length > 0) { vi.BDLPostfach = s[7];  }
+
+                    // Check missing info in ITAM
+                    if (_mITAM.ContainsKey(s[0])) {
+                        ITAM itam = _mITAM[s[0]];
+                        if (itam.getVerteiler() == null) {
+                            itam.setVerteiler(vi.DPDHLPostfach);
+                        }
+                        if (itam.getBDL() == null) {
+                            itam.setBDL(vi.BDLPostfach);
+                        }
+                    }
                 }
             }
         }
@@ -252,6 +263,9 @@ namespace WpfITAM
                 Byte[] bs = new UTF8Encoding(true).GetBytes(s);
                 fs.Write(bs, 0, bs.Length);
                 foreach (var itam in _mITAM) {
+                    if (itam.Value.getIcto() == "ITR-4404") {
+                        Trace.WriteLine(">>>");
+                    }
                     line = itam.Value.getIcto() + ";" +
                            itam.Value.getName() + ";" +
                            itam.Value.getADM() + ";" +
@@ -276,11 +290,6 @@ namespace WpfITAM
                     if (itam.Value.getVerteiler() != null && itam.Value.getVerteiler().Length > 0){
                         if (!mEmail.ContainsKey(itam.Value.getVerteiler())) {
                             mEmail.Add(itam.Value.getVerteiler(), itam.Value.getVerteiler());
-                        }
-                    }
-                    if (itam.Value.getBDL() != null && itam.Value.getBDL().Length > 0) {
-                        if (!mEmail.ContainsKey(itam.Value.getBDL())) {
-                            mEmail.Add(itam.Value.getBDL(), itam.Value.getBDL());
                         }
                     }
                     if (itam.Value.getBDL() != null && itam.Value.getBDL().Length > 0) {
