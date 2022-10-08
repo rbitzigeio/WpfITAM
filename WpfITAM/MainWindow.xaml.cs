@@ -263,7 +263,7 @@ namespace WpfITAM
                 Byte[] bs = new UTF8Encoding(true).GetBytes(s);
                 fs.Write(bs, 0, bs.Length);
                 foreach (var itam in _mITAM) {
-                    if (itam.Value.getIcto() == "ICTO-915" || itam.Value.getIcto() == "ICTO-959") {
+                    if (itam.Value.getIcto() == "SPL-3041") {
                         Trace.WriteLine(">>>");
                     }
                     line = itam.Value.getIcto() + ";" +
@@ -277,12 +277,11 @@ namespace WpfITAM
                            itam.Value.getWDL() + "\n";
                     Byte[] info = new UTF8Encoding(true).GetBytes(line);
                     fs.Write(info, 0, info.Length);
-                    if (itam.Value.getADM() != null && itam.Value.getADM().Length > 0) {
-                        if (!mEmail.ContainsKey(itam.Value.getADM()) && // prüfe Vorhandensein der E-Mail-Adresse in Map
-                            _mEmail[itam.Value.getADM()].Length > 0  &&
-                            !_mEmail.ContainsValue(itam.Value.getADM()) &&
-                            !_mEmail.ContainsValue(_mEmail[itam.Value.getADM()])) {
-                            mEmail.Add(itam.Value.getADM(), _mEmail[itam.Value.getADM()]);
+                    string adm = itam.Value.getADM();
+                    if (adm != null && adm.Length > 0) {
+                        string email = _mEmail[adm];
+                        if (!mEmail.ContainsKey(email)) {
+                            mEmail.Add(email, email);
                         }
                     }
                     if (itam.Value.getADMVertreter() != null && itam.Value.getADMVertreter().Length > 0) {
