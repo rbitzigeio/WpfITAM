@@ -263,6 +263,12 @@ namespace WpfITAM
                 Byte[] bs = new UTF8Encoding(true).GetBytes(s);
                 fs.Write(bs, 0, bs.Length);
                 foreach (var itam in _mITAM) {
+<<<<<<< HEAD
+=======
+                    if (itam.Value.getIcto() == "SPL-3041") {
+                        Trace.WriteLine(">>>");
+                    }
+>>>>>>> ca7fb8e612ed7b7248baccb8290e7c8714e98b4c
                     line = itam.Value.getIcto() + ";" +
                            itam.Value.getName() + ";" +
                            itam.Value.getADM() + ";" +
@@ -274,9 +280,16 @@ namespace WpfITAM
                            itam.Value.getWDL() + "\n";
                     Byte[] info = new UTF8Encoding(true).GetBytes(line);
                     fs.Write(info, 0, info.Length);
+<<<<<<< HEAD
                     if (itam.Value.getADM() != null && itam.Value.getADM().Length > 0) {
                         string email = _mEmail[itam.Value.getADM()];
                         if (!mEmail.ContainsKey(email) && email != null) {  // prüfe Vorhandensein der E-Mail-Adresse in Map
+=======
+                    string adm = itam.Value.getADM();
+                    if (adm != null && adm.Length > 0) {
+                        string email = _mEmail[adm];
+                        if (!mEmail.ContainsKey(email)) {
+>>>>>>> ca7fb8e612ed7b7248baccb8290e7c8714e98b4c
                             mEmail.Add(email, email);
                         }
                     }
