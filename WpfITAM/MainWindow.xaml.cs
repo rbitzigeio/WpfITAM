@@ -263,9 +263,6 @@ namespace WpfITAM
                 Byte[] bs = new UTF8Encoding(true).GetBytes(s);
                 fs.Write(bs, 0, bs.Length);
                 foreach (var itam in _mITAM) {
-                    if (itam.Value.getIcto() == "ICTO-915" || itam.Value.getIcto() == "ICTO-959") {
-                        Trace.WriteLine(">>>");
-                    }
                     line = itam.Value.getIcto() + ";" +
                            itam.Value.getName() + ";" +
                            itam.Value.getADM() + ";" +
@@ -278,11 +275,9 @@ namespace WpfITAM
                     Byte[] info = new UTF8Encoding(true).GetBytes(line);
                     fs.Write(info, 0, info.Length);
                     if (itam.Value.getADM() != null && itam.Value.getADM().Length > 0) {
-                        if (!mEmail.ContainsKey(itam.Value.getADM()) && // prüfe Vorhandensein der E-Mail-Adresse in Map
-                            _mEmail[itam.Value.getADM()].Length > 0  &&
-                            !_mEmail.ContainsValue(itam.Value.getADM()) &&
-                            !_mEmail.ContainsValue(_mEmail[itam.Value.getADM()])) {
-                            mEmail.Add(itam.Value.getADM(), _mEmail[itam.Value.getADM()]);
+                        string email = _mEmail[itam.Value.getADM()];
+                        if (!mEmail.ContainsKey(email) && email != null) {  // prüfe Vorhandensein der E-Mail-Adresse in Map
+                            mEmail.Add(email, email);
                         }
                     }
                     if (itam.Value.getADMVertreter() != null && itam.Value.getADMVertreter().Length > 0) {
