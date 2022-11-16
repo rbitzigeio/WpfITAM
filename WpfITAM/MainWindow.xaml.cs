@@ -197,18 +197,23 @@ namespace WpfITAM
             tbLog.Text = "Count of IT-AM objects : " + _mITAM.Count().ToString();
             // Create a TreeViewItem.
             TreeViewItem item = new TreeViewItem();
-            item.Header = "IT-AM Sytem";
+            item.Header = "IT-AM System";
             // Insert tree items to root item
             foreach (var entry in _mITAM) {
                 TreeViewItem tvi = new TreeViewItem();
                 tvi.Header = entry.Key;
                 item.Items.Add(tvi);
             }
+            // Second Item
+            TreeViewItem item2 = new TreeViewItem();
+            item2.Header = "IT-AM Name";
             // Get TreeView reference and add  items.
             var tree = sender as TreeView;
-            if (tree != null){
+            if (tree != null) {
                 tree.Items.Add(item);
+                tree.Items.Add(item2);
             }
+
         }
 
         /*-------------------------------------------------------------
