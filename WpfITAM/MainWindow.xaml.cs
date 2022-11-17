@@ -210,7 +210,7 @@ namespace WpfITAM
             foreach (var entry in sortedNames) {
                 item2.Items.Add(entry);
             }
-            // Get TreeView reference and add  items.
+            // Get TreeView reference and add items.
             var tree = sender as TreeView;
             if (tree != null) {
                 tree.Items.Add(item);
@@ -231,36 +231,63 @@ namespace WpfITAM
          * Aktualisierung der Daten des IT-Systems bei Änderung der Auswahl im Baum
          */
         private void selectionChanged(object sender, RoutedPropertyChangedEventArgs<object> e) {
-            var   item = (e.NewValue as TreeViewItem);
+            var item = (e.NewValue as TreeViewItem);
             if (item != null) {
                 string icto = item.Header.ToString();
                 if (icto != null) { 
                     tbLog.Text  = icto;
-                    if (_mITAM.ContainsKey(icto)) {
-                        ITAM itam = _mITAM[icto];
-                        lICTO.Content         = icto;
-                        //lName.Content         = itam.getName();
-                        tbName.Text           = itam.getName();
-                        lADM.Content          = itam.getADM();
-                        lADMVertreter.Content = itam.getADMVertreter();
-                        lOrganisation.Content = itam.getOrganisation();
-                        lVerteiler.Content    = itam.getVerteiler();
-                        lBDL.Content          = itam.getBDL();
-                        lEDL.Content          = itam.getEDL();
-                        lWDL.Content          = itam.getWDL();
-                        if (_mADMInfo.ContainsKey(icto)) {
-                            VerteilerInfo vi = _mADMInfo[icto];
-                            if (lVerteiler.Content == null) { lVerteiler.Content = vi.DPDHLPostfach; }
-                            if (lBDL.Content       == null) { lBDL.Content       = vi.BDLPostfach;}
-                        }
+                    updateITSystemView(icto);
+                }
+            } else {
+                string name = (e.NewValue as string);
+                if (name != null && name.Length>0) {
+                    tbLog.Text = name;
+                    string icto = getICTOByName(name);
+                    if (icto != null) {
+                        tbLog.Text = icto;
+                        updateITSystemView(icto);
                     }
                 }
             }
         }
+
+        private string getICTOByName(string name) {
+            string icto = null;
+            foreach (var entry in _mITAM) {
+                string itname = entry.Value.getName();
+                if (itname != null && itname.Equals(name)) {
+                    icto = entry.Key;
+                    break;
+                }
+            }
+            return icto;
+        }
+
+        private void updateITSystemView(string icto) {
+            if (_mITAM.ContainsKey(icto)) {
+                ITAM itam = _mITAM[icto];
+                lICTO.Content = icto;
+                //lName.Content         = itam.getName();
+                tbName.Text = itam.getName();
+                lADM.Content = itam.getADM();
+                lADMVertreter.Content = itam.getADMVertreter();
+                lOrganisation.Content = itam.getOrganisation();
+                lVerteiler.Content = itam.getVerteiler();
+                lBDL.Content = itam.getBDL();
+                lEDL.Content = itam.getEDL();
+                lWDL.Content = itam.getWDL();
+                if (_mADMInfo.ContainsKey(icto)) {
+                    VerteilerInfo vi = _mADMInfo[icto];
+                    if (lVerteiler.Content == null) { lVerteiler.Content = vi.DPDHLPostfach; }
+                    if (lBDL.Content == null) { lBDL.Content = vi.BDLPostfach; }
+                }
+            }
+        }
+
         /*--------------------------------------------------------------------
-         * Extrahieren der gefundenen Daten in eine CSV Datei, die an Dienstleister
-         * übergeben werden kann.
-         */
+* Extrahieren der gefundenen Daten in eine CSV Datei, die an Dienstleister
+* übergeben werden kann.
+*/
         private void BtnExtractClick(object sender, RoutedEventArgs e) {
             tbLog.Text = "Extract Application";
             Dictionary<string, string> mEmail = new Dictionary<string, string>();
