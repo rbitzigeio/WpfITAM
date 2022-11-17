@@ -252,7 +252,7 @@ namespace WpfITAM
         }
 
         private string getICTOByName(string name) {
-            string icto = null;
+            string? icto = null;
             foreach (var entry in _mITAM) {
                 string itname = entry.Value.getName();
                 if (itname != null && itname.Equals(name)) {
@@ -291,7 +291,7 @@ namespace WpfITAM
         private void BtnExtractClick(object sender, RoutedEventArgs e) {
             tbLog.Text = "Extract Application";
             Dictionary<string, string> mEmail = new Dictionary<string, string>();
-            string line = null;
+            string? line = null;
             string path = _dataDir + "IT-AM-Systeme.csv";
             using (FileStream fs = File.Open(path, FileMode.OpenOrCreate, FileAccess.Write, FileShare.None)) {
                 string s = "ICTO; Name; ADM; ADM-Vertreter; Organisation; Change Verteiler; Betriebs-DL; Entwicklungs-DL; Wartungs-DL \n";
@@ -316,31 +316,18 @@ namespace WpfITAM
                             mEmail.Add(email, email);
                         }
                     }
-                    if (itam.Value.getADMVertreter() != null && itam.Value.getADMVertreter().Length > 0) {
-                        if (!mEmail.ContainsKey(itam.Value.getADMVertreter())) {
-                            mEmail.Add(itam.Value.getADMVertreter(), itam.Value.getADMVertreter());
-                        }
-                    }
-                    if (itam.Value.getVerteiler() != null && itam.Value.getVerteiler().Length > 0){
-                        if (!mEmail.ContainsKey(itam.Value.getVerteiler())) {
-                            mEmail.Add(itam.Value.getVerteiler(), itam.Value.getVerteiler());
-                        }
-                    }
-                    if (itam.Value.getBDL() != null && itam.Value.getBDL().Length > 0) {
-                        if (!mEmail.ContainsKey(itam.Value.getBDL())) {
-                            mEmail.Add(itam.Value.getBDL(), itam.Value.getBDL());
-                        }
-                    }
-                    if (itam.Value.getEDL() != null && itam.Value.getEDL().Length > 0) {
-                        if (!mEmail.ContainsKey(itam.Value.getEDL())) {
-                            mEmail.Add(itam.Value.getEDL(), itam.Value.getEDL());
-                        }
-                    }
-                    if (itam.Value.getWDL() != null && itam.Value.getWDL().Length > 0) {
+                    updateEmail(mEmail, itam.Value.getADMVertreter());
+                    updateEmail(mEmail, itam.Value.getVerteiler());
+                    updateEmail(mEmail, itam.Value.getBDL());
+                    updateEmail(mEmail, itam.Value.getEDL());
+                    updateEmail(mEmail, itam.Value.getWDL());
+                    /*
+                        if (itam.Value.getWDL() != null && itam.Value.getWDL().Length > 0) {
                         if (!mEmail.ContainsKey(itam.Value.getWDL())) {
                             mEmail.Add(itam.Value.getWDL(), itam.Value.getWDL());
                         }
                     }
+                    */
                 }
                 fs.Flush();
                 fs.Close();
@@ -354,6 +341,14 @@ namespace WpfITAM
                 }
                 fs.Flush();
                 fs.Close();
+            }
+        }
+
+        private void updateEmail(Dictionary<string, string> mEmail, string email) {
+            if (email != null && email.Length > 0) {
+                if (!mEmail.ContainsKey(email)) {
+                    mEmail.Add(email, email);
+                }
             }
         }
         /*--------------------------------------------------------------------
