@@ -61,9 +61,7 @@ namespace WpfITAM
                 } else {
                     vi = null;
                 }
-                if (s[0] == "ITR-4404") {
-                    Trace.WriteLine(line);
-                }
+               
                 if (vi != null) {
                     if (s[1] != null && s[1].Length > 0) { vi.Project = s[1];      }
                     if (s[2] != null && s[2].Length > 0) { vi.LS_PI = s[2];        }
@@ -106,9 +104,7 @@ namespace WpfITAM
                 string[] s = line.Split(";");
                 if (s.Length > 2 && _mITAM.ContainsKey(s[2])) {
                     ITAM itam = _mITAM[s[2]];
-                    if (s[2] == "ITR-3443") {
-                        Trace.WriteLine(line);
-                    }
+                   
                     itam.setName(s[1]);
                     _mNameToIcto.Add(s[1], s[2]);
                     if (s.Length > 5)
@@ -125,9 +121,6 @@ namespace WpfITAM
                 //Trace.WriteLine(line);
                 string[] s = line.Split(";");
                 if (s.Length == 17) {
-                    if (s[3] == "ITR-3443") {
-                        Trace.WriteLine(line);
-                    }
                     if (_mITAM.ContainsKey(s[3])) {
                         ITAM itam = _mITAM[s[3]];
                         switch (s[10]) {
@@ -197,16 +190,26 @@ namespace WpfITAM
             tbLog.Text = "Count of IT-AM objects : " + _mITAM.Count().ToString();
             // Create a TreeViewItem.
             TreeViewItem item = new TreeViewItem();
-            item.Header = "IT-AM System";
-            // Insert tree items to root item
+            item.Header = "IT-AM Systems";
+            // Insert tree items to root item and get names of IT-Systems
+            string name = "";
+            List<string> names = new List<string>();
             foreach (var entry in _mITAM) {
                 TreeViewItem tvi = new TreeViewItem();
                 tvi.Header = entry.Key;
                 item.Items.Add(tvi);
+                name = entry.Value.getName();
+                if (name != null && name.Length > 0) {
+                    names.Add(name);
+                }
             }
             // Second Item
             TreeViewItem item2 = new TreeViewItem();
-            item2.Header = "IT-AM Name";
+            item2.Header = "IT-AM Names";
+            List<string> sortedNames = names.OrderBy(name => name).ToList();
+            foreach (var entry in sortedNames) {
+                item2.Items.Add(entry);
+            }
             // Get TreeView reference and add  items.
             var tree = sender as TreeView;
             if (tree != null) {
@@ -342,7 +345,9 @@ namespace WpfITAM
                 string icto               = _mNameToIcto[tb.Text];
                 tbLog.Text                = "Focus Lost. New ICTO : " + tb.Text + " / " + icto;
                 TreeViewItem newTVI       = new TreeViewItem();
-                newTVI.Header             = "IT-AM Sytem";
+                newTVI.Header             = "IT-AM Systems";
+                string name               = "";
+                List<string> names        = new List<string>();
                 newTVI.IsExpanded         = true;
                 TreeViewItem selectedItem = new TreeViewItem();
                 tvIcto.Items.Add(newTVI);
@@ -353,9 +358,19 @@ namespace WpfITAM
                     if (itam.Value.getIcto().Equals(icto)) {
                         Trace.WriteLine("Icto found : " + icto);
                         selectedItem = item2;
-                        
+                    }
+                    name = itam.Value.getName();
+                    if (name != null && name.Length>0) {
+                        names.Add(name);
                     }
                 }
+                TreeViewItem tviNames = new TreeViewItem();
+                tviNames.Header = "IT-AM Names";
+                List<string> sortedNames = names.OrderBy(name => name).ToList();
+                foreach (var entry in sortedNames) {
+                    tviNames.Items.Add(entry);
+                }
+                tvIcto.Items.Add(tviNames);
                 selectedItem.SetValue(TreeViewItem.IsSelectedProperty, true);
                 tvIcto.UpdateLayout();
             } else {
