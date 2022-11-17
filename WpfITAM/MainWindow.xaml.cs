@@ -27,7 +27,8 @@ namespace WpfITAM
         Dictionary<string, VerteilerInfo>  _mADMInfo    = new Dictionary<string, VerteilerInfo>();
         string                             _lastName    = "";
         string                             _dataDir     = "";
-
+        const string                       _TVI_SYSTEMS = "IT-AM Systems";
+        const string                       _TVI_NAMES   = "IT-AM Names";
         public MainWindow() {
             loadData(); 
             InitializeComponent();
@@ -63,13 +64,13 @@ namespace WpfITAM
                 }
                
                 if (vi != null) {
-                    if (s[1] != null && s[1].Length > 0) { vi.Project = s[1];      }
-                    if (s[2] != null && s[2].Length > 0) { vi.LS_PI = s[2];        }
-                    if (s[3] != null && s[3].Length > 0) { vi.LS_NPI = s[3];       }
-                    if (s[4] != null && s[4].Length > 0) { vi.ADM = s[4];          }
-                    if (s[5] != null && s[5].Length > 0) { vi.ADMPostfach = s[5];  }
-                    if (s[6] != null && s[6].Length > 0) { vi.DPDHLPostfach = s[6];}
-                    if (s[7] != null && s[7].Length > 0) { vi.BDLPostfach = s[7];  }
+                    if (s[1] != null && s[1].Length > 0) { vi.Project       = s[1]; }
+                    if (s[2] != null && s[2].Length > 0) { vi.LS_PI         = s[2]; }
+                    if (s[3] != null && s[3].Length > 0) { vi.LS_NPI        = s[3]; }
+                    if (s[4] != null && s[4].Length > 0) { vi.ADM           = s[4]; }
+                    if (s[5] != null && s[5].Length > 0) { vi.ADMPostfach   = s[5]; }
+                    if (s[6] != null && s[6].Length > 0) { vi.DPDHLPostfach = s[6]; }
+                    if (s[7] != null && s[7].Length > 0) { vi.BDLPostfach   = s[7]; }
 
                     // Check missing info in ITAM
                     if (_mITAM.ContainsKey(s[0])) {
@@ -148,9 +149,9 @@ namespace WpfITAM
             foreach (string line in System.IO.File.ReadLines(dataDir + v))
             {
                 //Trace.WriteLine(line);
-                string[] s = line.Split(";");
-                string name = null;
-                string email = null;
+                string[] s     = line.Split(";");
+                string   name  = null;
+                string   email = null;
                 if (s.Length == 2) {
                     name          = s[0];
                     email         = s[1];
@@ -190,7 +191,7 @@ namespace WpfITAM
             tbLog.Text = "Count of IT-AM objects : " + _mITAM.Count().ToString();
             // Create a TreeViewItem.
             TreeViewItem item = new TreeViewItem();
-            item.Header = "IT-AM Systems";
+            item.Header = _TVI_SYSTEMS;
             // Insert tree items to root item and get names of IT-Systems
             string name = "";
             List<string> names = new List<string>();
@@ -205,7 +206,7 @@ namespace WpfITAM
             }
             // Second Item
             TreeViewItem item2 = new TreeViewItem();
-            item2.Header = "IT-AM Names";
+            item2.Header = _TVI_NAMES;
             List<string> sortedNames = names.OrderBy(name => name).ToList();
             foreach (var entry in sortedNames) {
                 item2.Items.Add(entry);
@@ -321,13 +322,6 @@ namespace WpfITAM
                     updateEmail(mEmail, itam.Value.getBDL());
                     updateEmail(mEmail, itam.Value.getEDL());
                     updateEmail(mEmail, itam.Value.getWDL());
-                    /*
-                        if (itam.Value.getWDL() != null && itam.Value.getWDL().Length > 0) {
-                        if (!mEmail.ContainsKey(itam.Value.getWDL())) {
-                            mEmail.Add(itam.Value.getWDL(), itam.Value.getWDL());
-                        }
-                    }
-                    */
                 }
                 fs.Flush();
                 fs.Close();
@@ -367,7 +361,7 @@ namespace WpfITAM
                 string icto               = _mNameToIcto[tb.Text];
                 tbLog.Text                = "Focus Lost. New ICTO : " + tb.Text + " / " + icto;
                 TreeViewItem newTVI       = new TreeViewItem();
-                newTVI.Header             = "IT-AM Systems";
+                newTVI.Header             = _TVI_SYSTEMS;
                 string name               = "";
                 List<string> names        = new List<string>();
                 newTVI.IsExpanded         = true;
@@ -387,7 +381,7 @@ namespace WpfITAM
                     }
                 }
                 TreeViewItem tviNames = new TreeViewItem();
-                tviNames.Header = "IT-AM Names";
+                tviNames.Header = _TVI_NAMES;
                 List<string> sortedNames = names.OrderBy(name => name).ToList();
                 foreach (var entry in sortedNames) {
                     tviNames.Items.Add(entry);
